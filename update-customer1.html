@@ -61,21 +61,21 @@
     <p class="off-white-text">Welcome To Auto Service Track</p>
   </div>
  <div class="mb-3 mt-3">
-  <h2>Add Customer Details</h2>
-  <form action="/add-customer-service-station" method="post">
+  <h2>Update Customer</h2>
+  <form action="/update-customer-service-station" method="post">
     <div class="mb-3 mt-3">
-      <label for="name">name:</label>
-      <input type="text" class="form-control" id="name" placeholder="Enter Customer Name" name="name">
-    </div>
-    <div class="mb-3 mt-3">
-      <label for="phone_number">Phone Number:</label>
-      <input type="text" class="form-control" id="phone_number" placeholder="Enter Phone Number" name="phone_number">
-    </div>
+  <label for="name">name:</label>
+  <input type="text" class="form-control" id="name" placeholder="Enter Customer Name" name="name" value="{{customer['name']}}">
+</div>
+<div class="mb-3 mt-3">
+  <label for="phone_number">Phone Number:</label>
+  <input type="text" class="form-control" id="phone_number" placeholder="Enter Phone Number" name="phone_number" value="{{customer['phone_number']}}">
+</div>
+<div class="mb-3 mt-3">
+  <label for="email">email:</label>
+  <input type="email" class="form-control" id="email" placeholder="Enter Customer Email" name="email" value="{{customer['email']}}">
+</div>
 
-    <div class="mb-3 mt-3">
-      <label for="email">email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter Customer Email" name="email">
-    </div>
 
     <div class="form-check">
         <label for="Gender">gender:</label>
@@ -88,15 +88,15 @@
       <label class="form-check-label" for="gender">Female</label>
     </div>
 
-    <div class="mb-3 mt-3">
-      <label for="address">Address:</label>
-      <input type="text" class="form-control" id="address" placeholder="Enter Customer Address" name="address">
-    </div>
+   <div class="mb-3 mt-3">
+  <label for="address">Address:</label>
+  <input type="text" class="form-control" id="address" placeholder="Enter Customer Address" name="address" value="{{customer['address']}}">
+</div>
     <div>
     <input type="hidden" name="service_station_email" value="{{ session['email'] }}">
     <input type="hidden" name="service_station_id" value="{{ session['id'] }}">
     </div>
-    <button type="submit" class="btn btn-primary mt-3" style="background-color: black;">Add Customer</button>
+    <button type="submit" class="btn btn-primary mt-3" style="background-color: black;">Update Customer</button>
   </form>
 </div>
 
