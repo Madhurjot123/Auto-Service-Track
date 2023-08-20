@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,17 +7,11 @@
   <title>Auto Service Track</title>
 
   <style>
-    .bg-black {
-      background-color: black;
+    .bg-black-jumbotron {
+      background-color: black; /* Updated jumbotron background color to black */
     }
-    .bg-black-text {
-      color: white;
-    }
-    .dark-red-text {
-      color: darkred;
-    }
-    .off-white-text {
-      color: #f8f9fa; /* Off-white color code */
+    .white-text {
+      color: white; /* Updated text color to white */
     }
   </style>
 
@@ -25,18 +19,15 @@
 <body>
 
 <div class="container mt-3">
-  <div class="mt-4 p-5 bg-black bg-black-text rounded">
+  <div class="mt-4 p-5 bg-black-jumbotron white-text rounded"> <!-- Updated class for jumbotron background and text color -->
     <h1 class="dark-red-text">Auto Service Track</h1>
     <p class="off-white-text">Welcome To Auto Service Track</p>
   </div>
 
-
 <div class="mb-3 mt-3">
   <h2>Login Here</h2>
-  <form action="login-serviceStation"  method = "post">
+  <form action="login-serviceStation" method="post">
    <div class="container mt-3">
-
-
     <div class="mb-3 mt-3">
       <label for="email">Email:</label>
       <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
@@ -45,18 +36,11 @@
       <label for="pwd">Password:</label>
       <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
     </div>
-
    <button type="submit" class="btn btn-primary" style="background-color: black;">Login</button>
-
-
 </div>
-
   </form>
      <br>
       <a href="/register" style="color: black;">New User? Register Here</a>
-
 </div>
-
-
 
 </html>

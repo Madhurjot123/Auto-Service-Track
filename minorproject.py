@@ -53,11 +53,13 @@ def login_service_station():
         session['email'] = documents[0]['email']
         session['service_station_id'] = str(documents[0]['_id'])
         session['name'] = documents[0]['name']
-        session['service_station_name'] = documents[0]['service_station']  # Set the service_station_name in session
+        session['service_station_name'] = documents[0]['service_station']
+        session['service_station_email'] = documents[0]['email']
         print(vars(session))
         return render_template('home1.html')
     else:
         return render_template('error1.html')
+
 
 
 @web_app.route("/add-customer-service-station", methods=['POST'])
@@ -95,10 +97,14 @@ def update_customer_service_station():
     }
     if len(customer_data_to_update['name']) == 0 or len(customer_data_to_update['phone_number']) == 0 or len(
             customer_data_to_update['email']) == 0:
-        return render_template('error.html', message="Name, Phone and Email cannot be Empty")
+        return render_template('error1.html', message="Name, Phone and Email cannot be Empty")
     print(customer_data_to_update)
+
     db = MongoDBHelper(collection="service station customers")
     query = {'email': request.form['email']}
+
+    print(customer_data_to_update)
+    print(query)
     db.update(customer_data_to_update, query)
 
     return render_template('success1.html',
@@ -138,10 +144,96 @@ def update_customer(id):
     return render_template("update-customer1.html", customer=customer)
 
 
+@web_app.route("/search")
+def search():
+    return render_template("search1.html")
+
+
+@web_app.route("/search-customer", methods=["POST"])
+def search_customer():
+    db = MongoDBHelper(collection="service station customers")
+    # To fetch customer where email and vet id will match
+    query = {'email': request.form['email']}
+    customers_cursor = db.fetch(query)
+    customers = list(customers_cursor)
+
+    if len(customers) == 1:
+        customer = customers[0]
+        return render_template("customer-profile1.html", customer=customer)
+    else:
+        return render_template("error1.html", message="customer not found..")
+
+
+@web_app.route("/add-car/<id>")
+def add_car(id):
+    db = MongoDBHelper(collection="service station customers")
+    # To fetch customer where email and vet id will match
+    query = {'_id': ObjectId(id)}
+    customers = db.fetch(query)
+    customer = customers[0]
+    return render_template("add-car1.html",
+                           _id=session['service_station_id'],
+                           email=session['service_station_email'],
+                           name=session['service_station_name'],
+                           customer=customer)
+
+
+@web_app.route("/save-car", methods=["POST"])
+def save_car():
+    print("Received form data:", request.form)
+    car_data = {
+        'car_name': request.form['car_name'],
+        'car_number': request.form['car_number'],
+        'car_colour': request.form['car_colour'],
+        'car_model': request.form['car_model'],
+        'kms_driven': request.form['kms_driven'],
+        'service_due': request.form['service_due'],
+        'cid': request.form['cid'],
+        'customer_email': request.form['customer_email'],
+        'service_station_id': session['service_station_id'],
+        'createdOn': datetime.datetime.today()
+    }
+
+    if len(car_data['car_name']) == 0 or len(car_data['car_number']) == 0:
+        return render_template('error1.html', message="Name and colour cannot be Empty")
+
+    print(car_data)
+    db = MongoDBHelper(collection="service station cars")
+    db.insert(car_data)
+
+    return render_template('success1.html', message="{} added for customer {} successfully.."
+                           .format(car_data['car_name'], car_data['customer_email']))
+@web_app.route("/fetch-all-cars")
+def fetch_all_cars():
+    db = MongoDBHelper(collection="service station cars")
+    query = {'service_station_id': session['service_station_id']}
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    return render_template('cars1.html',
+                           email=session['service_station_email'],
+                           name=session['service_station_name'],
+                           documents=documents)
+
+
+@web_app.route("/fetch-cars/<email>")
+def fetch_cars_of_customer(email):  # Change 'id' to 'email'
+    db = MongoDBHelper(collection="service station customers")
+    query = {'email': email}  # Query by email, not _id
+    customer = db.fetch(query)[0]
+
+    db_cars = MongoDBHelper(collection="service station cars")
+    query = {'service_station_id': session['service_station_id'], 'customer_email': email}  # Use 'customer_email'
+    documents = db_cars.fetch(query)
+
+    return render_template('cars1.html',
+                           email=session['service_station_email'],
+                           name=session['service_station_name'],
+                           customer=customer,
+                           documents=documents)
 
 def main():
     web_app.secret_key = 'your_secret_key'
-    web_app.run(port=5001)
+    web_app.run(port=5050)
 
 
 if __name__ == "__main__":

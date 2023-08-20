@@ -32,7 +32,7 @@
         <ul class="navbar-nav">
 
           <li class="nav-item">
-            <a class="nav-link" href="/home-Auto Service Track">Add Customers</a>
+            <a class="nav-link" href="/home-Auto Service Track">Manage Customers</a>
           </li>
 
           <li class="nav-item">
@@ -54,36 +54,38 @@
 
 <div class="container mt-3">
 
-  <h2>All Customers</h2>
+  <h2>All cars</h2>
 
-  <p>Customers Fetched :</p>
+  <p>cars Fetched :</p>
      <div class="mb-3 mt-3">
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>name</th>
-        <th>phone number</th>
-        <th>email</th>
-        <th>gender</th>
-        <th>address</th>
+        <th>car_name</th>
+        <th>car_number</th>
+        <th>car colour</th>
+        <th>car model</th>
+        <th>kms driven</th>
+        <th>service due</th>
         <th>createdOn</th>
         <th>Actions</th>
       </tr>
     </thead>
 <tbody>
-
   {% for doc in documents %}
-
     <tr>
-      <td>{{ doc['name'] }}</td>
-      <td>{{ doc['phone_number'] }}</td>
-      <td>{{ doc['email'] }}</td>
-      <td>{{ doc['gender'] }}</td>
-      <td>{{ doc['address'] }}</td>
+      <td>{{ doc['car_name'] }}</td>
+      <td>{{ doc['car_number'] }}</td>
+      <td>{{ doc['car_colour'] }}</td>
+      <td>{{ doc['car_model'] }}</td>
+      <td>{{ doc['kms_driven'] }}</td>
+      <td>{{ doc['service_due'] }}</td>
       <td>{{ doc['createdOn'] }}</td>
-      <th><a href="/delete-customer/{{ doc['_id'] }}">Delete</a> | <a href="/update-customer/{{ doc['_id'] }}">Update</a></th>
+      <th><a href="/delete-car/{{ doc['_id'] }}">Delete</a> | <a href="/update-car/{{ doc['_id'] }}">Update</a></th>
 
     </tr>
+   <<input type="hidden" name="service_station_id" value="{{ service_station_id }}">
+   <input type="hidden" name="customer_email" value="{{ customer['email'] }}">
   {% endfor %}
 </tbody>
 </div>
