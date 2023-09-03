@@ -61,7 +61,6 @@ def login_service_station():
         return render_template('error1.html')
 
 
-
 @web_app.route("/add-customer-service-station", methods=['POST'])
 def add_customer_service_station():
     service_station_customer_data = {
@@ -113,7 +112,7 @@ def update_customer_service_station():
 
 @web_app.route("/logout")
 def logout():
-    session['vet_id'] = ""
+    session['_id'] = ""
     session['email'] = ""
     return redirect("/")
 
@@ -152,7 +151,6 @@ def search():
 @web_app.route("/search-customer", methods=["POST"])
 def search_customer():
     db = MongoDBHelper(collection="service station customers")
-    # To fetch customer where email and vet id will match
     query = {'email': request.form['email']}
     customers_cursor = db.fetch(query)
     customers = list(customers_cursor)
@@ -167,7 +165,6 @@ def search_customer():
 @web_app.route("/add-car/<id>")
 def add_car(id):
     db = MongoDBHelper(collection="service station customers")
-    # To fetch customer where email and vet id will match
     query = {'_id': ObjectId(id)}
     customers = db.fetch(query)
     customer = customers[0]
@@ -180,7 +177,6 @@ def add_car(id):
 
 @web_app.route("/save-car", methods=["POST"])
 def save_car():
-    print("Received form data:", request.form)
     car_data = {
         'car_name': request.form['car_name'],
         'car_number': request.form['car_number'],
@@ -203,6 +199,8 @@ def save_car():
 
     return render_template('success1.html', message="{} added for customer {} successfully.."
                            .format(car_data['car_name'], car_data['customer_email']))
+
+
 @web_app.route("/fetch-all-cars")
 def fetch_all_cars():
     db = MongoDBHelper(collection="service station cars")
@@ -216,9 +214,9 @@ def fetch_all_cars():
 
 
 @web_app.route("/fetch-cars/<email>")
-def fetch_cars_of_customer(email):  # Change 'id' to 'email'
+def fetch_cars_of_customer(email):
     db = MongoDBHelper(collection="service station customers")
-    query = {'email': email}  # Query by email, not _id
+    query = {'email': email}
     customer = db.fetch(query)[0]
 
     db_cars = MongoDBHelper(collection="service station cars")
@@ -231,9 +229,55 @@ def fetch_cars_of_customer(email):  # Change 'id' to 'email'
                            customer=customer,
                            documents=documents)
 
+
+@web_app.route("/delete-car/<id>")
+def delete_car(id):
+    db = MongoDBHelper(collection="service station cars")
+    query = {'_id': ObjectId(id)}
+    car = db.fetch(query)[0]
+    db.delete(query)
+    return render_template("success1.html", message="customer with ID {} and car name {} Deleted...".format(id, car['car_name']))
+
+
+@web_app.route("/update-car-service-station/<customer_email>", methods=['POST'])
+def update_car_service_station(customer_email):
+    car_data_to_update = {
+        'car_name': request.form['car_name'],
+        'car_number': request.form['car_number'],
+        'car_colour': request.form['car_colour'],
+        'car_model': request.form['car_model'],
+        'kms_driven': request.form['kms_driven'],
+        'car_id': request.form['car_id'],
+        'service_due': request.form['service_due'],
+        'customer_email': customer_email,  # Use the provided customer email
+        'service_station_id': session['service_station_id'],
+        'createdOn': datetime.datetime.today()
+    }
+
+    db = MongoDBHelper(collection="service station cars")
+    query = {'_id': ObjectId(request.form['car_id'])}  # Assuming 'car_id' is used to identify the car
+
+    print(car_data_to_update)
+    print(query)
+    db.update(car_data_to_update, query)
+
+    if len(car_data_to_update['car_name']) == 0 or len(car_data_to_update['car_number']) == 0 or len(
+            car_data_to_update['service_due']) == 0:
+        return render_template('error1.html', message="car name, car number, and service due cannot be Empty")
+
+    return render_template('success1.html',
+                           message="{} updated successfully".format(car_data_to_update['car_name']))
+
+
+@web_app.route("/update-car/<id>")
+def update_car(id):
+    db = MongoDBHelper(collection="service station cars")
+    query = {'_id': ObjectId(id)}
+    car = db.fetch(query)[0]  # Fetch a single car object
+    return render_template("update-cars1.html", car=car, customer_email=car['customer_email'])
 def main():
     web_app.secret_key = 'your_secret_key'
-    web_app.run(port=5050)
+    web_app.run(port=12121)
 
 
 if __name__ == "__main__":

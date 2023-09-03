@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Auto Service Track - Update Car</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<style>
+    .bg-black {
+      background-color: black;
+    }
+    .bg-black-text {
+      color: white;
+    }
+    .dark-red-text {
+      color: darkred;
+    }
+    .off-white-text {
+      color: #f8f9fa; /* Off-white color code */
+    }
+</style>
+
+<div class="container mt-3">
+    <nav class="navbar navbar-expand-sm bg-light">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home-Auto-Service-Track">Manage Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fetch-Customers-of-Service-Station">View Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">Search Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <div class="mt-4 p-5 bg-black bg-black-text rounded">
+            <h1 class="dark-red-text">Auto Service Track</h1>
+            <p class="off-white-text">Welcome To Auto Service Track</p>
+        </div>
+
+        <div class="mb-3 mt-3">
+            <h2>Update Car Details</h2>
+            <form action="/update-car-service-station/{{ car['customer_email'] }}" method="POST">
+                <div class="mb-3 mt-3">
+                    <label for="car_name">Car Name:</label>
+                    <input type="text" class="form-control" id="car_name" placeholder="Enter Car Name" name="car_name" value="{{car['car_name']}}">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="car_number">Car Number:</label>
+                    <input type="text" class="form-control" id="car_number" placeholder="Enter Car Number" name="car_number" value="{{car['car_number']}}">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="car_colour">Car Colour:</label>
+                    <input type="text" class="form-control" id="car_colour" placeholder="Enter Car Colour" name="car_colour" value="{{car['car_colour']}}">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="car_model">Car Model:</label>
+                    <input type="text" class="form-control" id="car_model" placeholder="Enter Car Model" name="car_model" value="{{car['car_model']}}">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="kms_driven">KMS driven:</label>
+                    <input type="text" class="form-control" id="kms_driven" placeholder="Enter Kilometers Driven" name="kms_driven" value="{{car['kms_driven']}}">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="service_due">Service Due:</label>
+                    <input type="date" class="form-control" id="service_due" placeholder="Enter Service Due Date" name="service_due" value="{{car['service_due']}}">
+                </div>
+
+                <input type="hidden" name="car_id" value="{{ car['_id'] }}">
+                <input type="hidden" name="service_station_email" value="{{ session['email'] }}">
+                <input type="hidden" name="service_station_id" value="{{ session['id'] }}">
+                <button type="submit" class="btn btn-primary mt-3" style="background-color: black;">Update Car</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
