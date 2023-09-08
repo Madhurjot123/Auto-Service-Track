@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Auto Service Track - add Service</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+ <style>
+    .bg-black {
+      background-color: black;
+    }
+    .bg-black-text {
+      color: white;
+    }
+    .dark-red-text {
+      color: darkred;
+    }
+    .off-white-text {
+      color: #f8f9fa; /* Off-white color code */
+    }
+  </style>
+<div class="container mt-3">
+
+  <nav class="navbar navbar-expand-sm bg-light">
+      <div class="container-fluid">
+
+        <ul class="navbar-nav">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/home-Auto-Service-Track">Manage Customers</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/fetch-Customers-of-Service-Station">View Customers</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/search">Search Customer</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+<div class="container mt-3">
+  <div class="mt-4 p-5 bg-black bg-black-text rounded">
+    <h1 class="dark-red-text">Auto Service Track</h1>
+    <p class="off-white-text">Welcome To Auto Service Track</p>
+  </div>
+ <div class="mb-3 mt-3">
+  <h2>Add Car Details</h2>
+  <form action="/save-service" method="post">
+    <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3">
+  <label for="problem">Problems</label>
+  <input type="text" class="form-control" id="problem" placeholder="Enter problem" name="problem">
+</div>
+<div class="mb-3 mt-3">
+  <label for="repaired parts">Repaired Parts:</label>
+  <input type="text" class="form-control" id="Repaired Parts" placeholder="Enter Repaired Parts" name="Repaired Parts">
+</div>
+<div class="mb-3 mt-3">
+  <label for="replaced parts">Replaced Parts:</label>
+  <input type="text" class="form-control" id="replaced parts" placeholder="Enter replaced parts" name="replaced parts">
+</div>
+<div class="mb-3 mt-3">
+  <label for="car type">car type:</label>
+  <input type="text" class="form-control" id="car type" placeholder="Enter car type" name="car type">
+</div>
+<div class="mb-3 mt-3">
+  <label for="price">price:</label>
+  <input type="text" class="form-control" id="price" placeholder="Enter price" name="price">
+</div>
+<div class="mb-3 mt-3">
+  <label for="service_due">Service Due:</label>
+  <input type="date" class="form-control" id="service_due" placeholder="Enter Service Due Date" name="service_due">
+</div>
+    <div>
+ <input type="hidden" name="cid" value="{{ customer['_id'] }}">
+ <input type="hidden" name="customer_email" value="{{ customer['email'] }}">
+ <input type="hidden" name="car_id" value="{{ car['_id'] }}">
+ <input type="hidden" name="car_number" value="{{ car['car_number'] }}">
+ <input type="hidden" name="service_station_email" value="{{ session['service_station_email'] }}">
+
+
+
+</div>
+
+
+
+    </div>
+    <button type="submit" class="btn btn-primary mt-3" style="background-color: black;">Add Service</button>
+  </form>
+</div>
+
+  </form>
+</div>
+
+</body>
+</html>

@@ -35,6 +35,10 @@ def register_service_station():
     db = MongoDBHelper(collection="service stations")
     db.insert(station_data)
 
+    session['service_station_id'] = str(station_data['_id'])  # Corrected the session variable
+    session['service_station_name'] = station_data['name']
+    session['service_station_email'] = station_data['email']
+
     return render_template('home1.html')
 
 
@@ -161,7 +165,6 @@ def search_customer():
     else:
         return render_template("error1.html", message="customer not found..")
 
-
 @web_app.route("/add-car/<id>")
 def add_car(id):
     db = MongoDBHelper(collection="service station customers")
@@ -173,6 +176,9 @@ def add_car(id):
                            email=session['service_station_email'],
                            name=session['service_station_name'],
                            customer=customer)
+
+
+
 
 
 @web_app.route("/save-car", methods=["POST"])
@@ -199,7 +205,6 @@ def save_car():
 
     return render_template('success1.html', message="{} added for customer {} successfully.."
                            .format(car_data['car_name'], car_data['customer_email']))
-
 
 @web_app.route("/fetch-all-cars")
 def fetch_all_cars():
@@ -249,13 +254,13 @@ def update_car_service_station(customer_email):
         'kms_driven': request.form['kms_driven'],
         'car_id': request.form['car_id'],
         'service_due': request.form['service_due'],
-        'customer_email': customer_email,  # Use the provided customer email
+        'customer_email': customer_email,
         'service_station_id': session['service_station_id'],
         'createdOn': datetime.datetime.today()
     }
 
     db = MongoDBHelper(collection="service station cars")
-    query = {'_id': ObjectId(request.form['car_id'])}  # Assuming 'car_id' is used to identify the car
+    query = {'_id': ObjectId(request.form['car_id'])}
 
     print(car_data_to_update)
     print(query)
@@ -273,8 +278,75 @@ def update_car_service_station(customer_email):
 def update_car(id):
     db = MongoDBHelper(collection="service station cars")
     query = {'_id': ObjectId(id)}
-    car = db.fetch(query)[0]  # Fetch a single car object
+    car = db.fetch(query)[0]
     return render_template("update-cars1.html", car=car, customer_email=car['customer_email'])
+
+
+@web_app.route("/add-service/<id>")
+def add_service(id):
+    db = MongoDBHelper(collection="service station cars")
+    query = {'_id': ObjectId(id)}
+    cars = db.fetch(query)
+    car = cars[0]
+
+    db_customer = MongoDBHelper(collection="service station customers")
+    query_customer = {'email': car['customer_email']}
+    customer = db_customer.fetch(query_customer)[0]
+
+    return render_template("add-services1.html",
+                           _id=session['service_station_id'],
+                           email=session['service_station_email'],
+                           name=session['service_station_name'],
+                           car=car,
+                           customer=customer)
+
+
+@web_app.route("/save-service", methods=["POST"])
+def save_service():
+    service_data = {
+        'problem': request.form['problem'],
+        'Repaired Parts': request.form['Repaired Parts'],
+        'replaced parts': request.form['replaced parts'],
+        'car type': request.form['car type'],
+        'price': request.form['price'],
+        'service_due': request.form['service_due'],
+        'cid': request.form['cid'],
+        'customer_email': request.form['customer_email'],
+        'car_id': request.form['car_id'],
+        'car_number': request.form['car_number'],
+        'service_station_name': session['service_station_name'],
+        'service_station_email': session['service_station_email'],
+        'createdOn': datetime.datetime.today()
+    }
+
+    if len(service_data['problem']) == 0 or len(service_data['service_due']) == 0:
+        return render_template('error1.html', message="problem and service due cannot be Empty")
+
+    print(service_data)
+    db = MongoDBHelper(collection="service-station-services")
+    db.insert(service_data)
+
+    return render_template('success1.html', message="service added successfully..")
+
+
+@web_app.route("/fetch-services-cars/<car_number>")
+def fetch_services_of_car(car_number):
+    print("car_number:", car_number)
+
+    db_services = MongoDBHelper(collection="service-station-services")
+    query_services = {
+        'car_number': car_number,
+    }
+    documents = db_services.fetch(query_services)
+    print(documents, type(documents))
+
+    return render_template('services-cars.html',
+                           documents=documents,
+                           car_number=car_number)
+
+
+
+
 def main():
     web_app.secret_key = 'your_secret_key'
     web_app.run(port=12121)
