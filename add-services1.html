@@ -82,11 +82,15 @@
   <input type="date" class="form-control" id="service_due" placeholder="Enter Service Due Date" name="service_due">
 </div>
     <div>
- <input type="hidden" name="cid" value="{{ customer['_id'] }}">
- <input type="hidden" name="customer_email" value="{{ customer['email'] }}">
- <input type="hidden" name="car_id" value="{{ car['_id'] }}">
- <input type="hidden" name="car_number" value="{{ car['car_number'] }}">
- <input type="hidden" name="service_station_email" value="{{ session['service_station_email'] }}">
+<input type="hidden" name="cid" value="{{ customer['_id'] }}">
+<input type="hidden" name="customer_email" value="{{ customer['email'] }}">
+<input type="hidden" name="customer_name" value="{{ customer['name'] }}">
+<input type="hidden" name="phone_number" value="{{ customer['phone_number'] }}">
+<input type="hidden" name="car_id" value="{{ car['_id'] }}">
+<input type="hidden" name="car_number" value="{{ car['car_number'] }}">
+<input type="hidden" name="car_name" value="{{ car['car_name'] }}">
+<input type="hidden" name="service_station_email" value="{{ session['service_station_email'] }}">
+
 
 
 

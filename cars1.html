@@ -58,8 +58,7 @@
           <th>Car Colour</th>
           <th>Car Model</th>
           <th>Kms Driven</th>
-          <th>Service Due</th>
-          <th>Created On</th>
+          <th>createdOn</th>
           <th>Actions</th>
           <th>Services</th>
         </tr>
@@ -72,7 +71,6 @@
             <td>{{ doc['car_colour'] }}</td>
             <td>{{ doc['car_model'] }}</td>
             <td>{{ doc['kms_driven'] }}</td>
-            <td>{{ doc['service_due'] }}</td>
             <td>{{ doc['createdOn'] }}</td>
             <td><a href="/delete-car/{{ doc['_id'] }}">Delete</a> | <a href="/update-car/{{ doc['_id'] }}">Update</a></td>
             <td><a href="/add-service/{{ doc['_id'] }}">Add</a>|<a href="/fetch-services-cars/{{ doc['car_number'] }}">View</a></td>

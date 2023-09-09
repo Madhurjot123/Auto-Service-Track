@@ -73,10 +73,6 @@
                     <label for="kms_driven">KMS driven:</label>
                     <input type="text" class="form-control" id="kms_driven" placeholder="Enter Kilometers Driven" name="kms_driven" value="{{car['kms_driven']}}">
                 </div>
-                <div class="mb-3 mt-3">
-                    <label for="service_due">Service Due:</label>
-                    <input type="date" class="form-control" id="service_due" placeholder="Enter Service Due Date" name="service_due" value="{{car['service_due']}}">
-                </div>
 
                 <input type="hidden" name="car_id" value="{{ car['_id'] }}">
                 <input type="hidden" name="service_station_email" value="{{ session['email'] }}">
