@@ -191,8 +191,7 @@ def save_car():
         'kms_driven': request.form['kms_driven'],
         'cid': request.form['cid'],
         'customer_email': request.form['customer_email'],
-        'service_station_id': session['service_station_id'],
-        'createdOn': datetime.datetime.today()
+        'service_station_id': session['service_station_id']
     }
 
     if len(car_data['car_name']) == 0 or len(car_data['car_number']) == 0:
@@ -204,7 +203,6 @@ def save_car():
 
     return render_template('success1.html', message="{} added for customer {} successfully.."
                            .format(car_data['car_name'], car_data['customer_email']))
-
 
 @web_app.route("/fetch-all-cars")
 def fetch_all_cars():
@@ -313,11 +311,6 @@ def save_service():
 
     print("Parsed service_due:", service_due)
 
-    # Fetch customer name and phone number from the form data
-    customer_email = request.form['customer_email']
-    customer_name = request.form['customer_name']
-    phone_number = request.form['phone_number']
-
     service_data = {
         'problem': request.form['problem'],
         'Repaired Parts': request.form['Repaired Parts'],
@@ -326,15 +319,12 @@ def save_service():
         'price': request.form['price'],
         'service_due': service_due,  # Store the parsed datetime object
         'cid': request.form['cid'],
-        'customer_email': customer_email,
-        'customer_name': customer_name,  # Include customer name
-        'phone_number': phone_number,  # Include phone number
+        'customer_email': request.form['customer_email'],
         'car_id': request.form['car_id'],
         'car_number': request.form['car_number'],
-        'car_name': request.form['car_name'],
         'service_station_name': session['service_station_name'],
         'service_station_email': session['service_station_email'],
-        'createdOn': datetime.now()  # Use datetime directly
+        'createdOn': datetime.today()  # Use datetime directly
     }
 
     if len(service_data['problem']) == 0:
@@ -348,45 +338,20 @@ def save_service():
     return render_template('success1.html', message="Service added successfully..")
 
 
-@web_app.route("/fetch-services-cars/<car_number>", methods=["GET", "POST"])
+@web_app.route("/fetch-services-cars/<car_number>")
 def fetch_services_of_car(car_number):
-    if request.method == "POST":
-        service_due_str = request.form['service_due']  # Get the service_due as a string from the form
+    print("car_number:", car_number)
 
-        try:
-            # Parse the service_due string into a datetime object
-            service_due = datetime.strptime(service_due_str, "%Y-%m-%d")
-        except ValueError:
-            print("Invalid date format. Use YYYY-MM-DD.")
-            return render_template("error1.html", message="Invalid date format. Use YYYY-MM-DD.")
-
-        print(f"Searching for services for car {car_number} with service_due: {service_due}")
-
-        db_services = MongoDBHelper(collection="service-station-services")
-        query_services = {
-            'car_number': car_number,
-            'service_due': service_due,  # Filter by service_due date
-        }
-        services_cursor = db_services.fetch(query_services)
-        services = list(services_cursor)
-
-        if services:
-            print(f"Found {len(services)} services for car {car_number}.")
-        else:
-            print(f"No services found for car {car_number} on {service_due}.")
-
-        return render_template('services-cars.html', services=services, car_number=car_number, search_date=service_due_str)
-
-    # If it's a GET request, simply fetch services for the car without filtering by date
     db_services = MongoDBHelper(collection="service-station-services")
     query_services = {
         'car_number': car_number,
     }
-    services_cursor = db_services.fetch(query_services)
-    services = list(services_cursor)
-    print(services, type(services))
+    documents = db_services.fetch(query_services)
+    print(documents, type(documents))
 
-    return render_template('services-cars.html', services=services, car_number=car_number)
+    return render_template('services-cars.html',
+                           documents=documents,
+                           car_number=car_number)
 
 
 @web_app.route("/search-service")
@@ -422,34 +387,6 @@ def search_service_of_car():
     else:
         print("No services found.")
         return render_template("error1.html", message="No services found.")
-
-
-@web_app.route("/search-service-by-car-number")
-def search_service_by_car_number():
-    return render_template("search-services-by-number.html")
-
-
-# Update your search_service_of_car function
-@web_app.route("/search-service-of-car-by-number", methods=["POST"])
-def search_service_of_car_by_number():
-    car_number = request.form['car_number']  # Get the car number from the form
-
-    print("Searching for services for car number:", car_number)
-
-    db = MongoDBHelper(collection="service-station-services")
-    query = {'car_number': car_number}  # Modify the query to search by car number
-
-    print("Querying the database with query:", query)
-
-    services_cursor = db.fetch(query)
-    services = list(services_cursor)
-
-    if services:
-        print(f"Found {len(services)} services for car number {car_number}.")
-        return render_template("search-services-by-number-profile.html", services=services)  # Pass the services list to the template
-    else:
-        print(f"No services found for car number {car_number}.")
-        return render_template("error1.html", message=f"No services found for car number {car_number}.")
 
 
 def main():

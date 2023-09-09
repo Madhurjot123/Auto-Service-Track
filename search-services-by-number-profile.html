@@ -31,7 +31,7 @@
     <p class="off-white-text">Welcome To Auto Service Track</p>
   </div>
   <br>
-  <h2>Today Services</h2>
+  <h2>Services</h2>
   <div class="card">
     {% for service in services %}
       <div class="card">
@@ -40,6 +40,11 @@
         <p class="card-text">Customer Phone: {{ service['phone_number'] }}</p>
         <p class="card-text">Car Name: {{ service['car_name'] }}</p>
         <p class="card-text">Car Number: {{ service['car_number'] }}</p>
+        <p class="card-text">Car Number: {{ service['service_due'] }}</p>
+        <p class="card-text">Service Price: {{ service['price'] }}</p>
+        <p class="card-text">Service Date: {{ service['createdOn'] }}</p>
+
+
         </div>
       </div>
     {% endfor %}
