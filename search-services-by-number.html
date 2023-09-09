@@ -59,8 +59,8 @@
       <h2>Search Customer</h2>
       <form action="/search-service-of-car-by-number" method="post">
         <div class="mb-3 mt-3">
-  <label for="car_number">Search by Car Number</label>
-  <input type="text" class="form-control" id="car_number" placeholder="Enter Car Number" name="car_number">
+  <label for="car_number">Car Number:</label>
+  <input type="text" class="form-control" id="car_number" placeholder="Enter Car Number" name="car_number" oninput="this.value = this.value.toUpperCase()">
 </div>
         <button type="submit" class="btn btn-primary mt-3" style="background-color: black;">Search Customer</button>
       </form>
