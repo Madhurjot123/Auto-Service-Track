@@ -75,7 +75,7 @@ def add_customer_service_station():
         'address': request.form['address'],
         'service_station_email': request.form['service_station_email'],
         'service_station_id': request.form['service_station_id'],
-        'createdOn': datetime.datetime.today()
+        'createdOn': datetime.now()
     }
     if len(service_station_customer_data['name']) == 0 or len(service_station_customer_data['phone_number']) == 0 or len(
             service_station_customer_data['email']) == 0:
@@ -154,8 +154,28 @@ def search():
 
 @web_app.route("/search-customer", methods=["POST"])
 def search_customer():
+    # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
+
+    if not service_station_email:
+        # If the session doesn't contain the service station email, return an error
+        print("Service station email not found in the session.")
+        return render_template("error1.html", message="Service station email not found in the session.")
+
+    customer_email = request.form['email']  # Get the customer email from the form
+
+    print(f"Searching for customer with email: {customer_email} for service station: {service_station_email}")
+
     db = MongoDBHelper(collection="service station customers")
-    query = {'email': request.form['email']}
+
+    # Modify the query to search by customer email and service station email
+    query = {
+        'email': customer_email,
+        'service_station_email': service_station_email
+    }
+
+    print("Querying the database with query:", query)
+
     customers_cursor = db.fetch(query)
     customers = list(customers_cursor)
 
@@ -163,7 +183,8 @@ def search_customer():
         customer = customers[0]
         return render_template("customer-profile1.html", customer=customer)
     else:
-        return render_template("error1.html", message="customer not found..")
+        return render_template("error1.html", message="Customer not found.")
+
 
 @web_app.route("/add-car/<id>")
 def add_car(id):
@@ -177,12 +198,16 @@ def add_car(id):
                            name=session['service_station_name'],
                            customer=customer)
 
-
-
-
-
 @web_app.route("/save-car", methods=["POST"])
 def save_car():
+        # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
+
+    if not service_station_email:
+            # If the session doesn't contain the service station email, return an error
+            print("Service station email not found in the session.")
+            return render_template("error1.html", message="Service station email not found in the session.")
+
     car_data = {
         'car_name': request.form['car_name'],
         'car_number': request.form['car_number'],
@@ -191,8 +216,10 @@ def save_car():
         'kms_driven': request.form['kms_driven'],
         'cid': request.form['cid'],
         'customer_email': request.form['customer_email'],
-        'service_station_id': session['service_station_id']
-    }
+        'service_station_id': session['service_station_id'],
+        'service_station_email': service_station_email,  # Add service_station_email to the car_data dictionary
+        'createdOn': datetime.now()
+        }
 
     if len(car_data['car_name']) == 0 or len(car_data['car_number']) == 0:
         return render_template('error1.html', message="Name and colour cannot be Empty")
@@ -203,6 +230,7 @@ def save_car():
 
     return render_template('success1.html', message="{} added for customer {} successfully.."
                            .format(car_data['car_name'], car_data['customer_email']))
+
 
 @web_app.route("/fetch-all-cars")
 def fetch_all_cars():
@@ -216,21 +244,30 @@ def fetch_all_cars():
                            documents=documents)
 
 
-@web_app.route("/fetch-cars/<email>")
-def fetch_cars_of_customer(email):
+@web_app.route("/fetch-cars/<customer_email>")
+def fetch_cars_of_customer(customer_email):
+    # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
+
+    if not service_station_email:
+        # If the session doesn't contain the service station email, return an error
+        print("Service station email not found in the session.")
+        return render_template("error1.html", message="Service station email not found in the session.")
+
     db = MongoDBHelper(collection="service station customers")
-    query = {'email': email}
+    query = {'email': customer_email}
     customer = db.fetch(query)[0]
 
     db_cars = MongoDBHelper(collection="service station cars")
-    query = {'service_station_id': session['service_station_id'], 'customer_email': email}  # Use 'customer_email'
+    query = {'service_station_id': session['service_station_id'], 'customer_email': customer_email}  # Use 'customer_email'
     documents = db_cars.fetch(query)
 
     return render_template('cars1.html',
-                           email=session['service_station_email'],
+                           email=service_station_email,  # Pass the service_station_email from the session
                            name=session['service_station_name'],
                            customer=customer,
                            documents=documents)
+
 
 
 @web_app.route("/delete-car/<id>")
@@ -311,6 +348,11 @@ def save_service():
 
     print("Parsed service_due:", service_due)
 
+    # Fetch customer name and phone number from the form data
+    customer_email = request.form['customer_email']
+    customer_name = request.form['customer_name']
+    phone_number = request.form['phone_number']
+
     service_data = {
         'problem': request.form['problem'],
         'Repaired Parts': request.form['Repaired Parts'],
@@ -319,12 +361,15 @@ def save_service():
         'price': request.form['price'],
         'service_due': service_due,  # Store the parsed datetime object
         'cid': request.form['cid'],
-        'customer_email': request.form['customer_email'],
+        'customer_email': customer_email,
+        'customer_name': customer_name,  # Include customer name
+        'phone_number': phone_number,  # Include phone number
         'car_id': request.form['car_id'],
         'car_number': request.form['car_number'],
+        'car_name': request.form['car_name'],
         'service_station_name': session['service_station_name'],
         'service_station_email': session['service_station_email'],
-        'createdOn': datetime.today()  # Use datetime directly
+        'createdOn': datetime.now()  # Use datetime directly
     }
 
     if len(service_data['problem']) == 0:
@@ -338,20 +383,58 @@ def save_service():
     return render_template('success1.html', message="Service added successfully..")
 
 
-@web_app.route("/fetch-services-cars/<car_number>")
+@web_app.route("/fetch-services-cars/<car_number>", methods=["GET", "POST"])
 def fetch_services_of_car(car_number):
-    print("car_number:", car_number)
+    # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
 
+    if not service_station_email:
+        # If the session doesn't contain the service station email, return an error
+        print("Service station email not found in the session.")
+        return render_template("error1.html", message="Service station email not found in the session.")
+
+    if request.method == "POST":
+        service_due_str = request.form['service_due']  # Get the service_due as a string from the form
+
+        try:
+            # Parse the service_due string into a datetime object
+            service_due = datetime.strptime(service_due_str, "%Y-%m-%d")
+        except ValueError:
+            print("Invalid date format. Use YYYY-MM-DD.")
+            return render_template("error1.html", message="Invalid date format. Use YYYY-MM-DD.")
+
+        print(f"Searching for services for car {car_number} with service_due: {service_due}")
+
+        db_services = MongoDBHelper(collection="service-station-services")
+
+        # Modify the query to filter by car_number and service_station_email
+        query_services = {
+            'car_number': car_number,
+            'service_station_email': service_station_email,
+        }
+        services_cursor = db_services.fetch(query_services)
+        services = list(services_cursor)
+
+        if services:
+            print(f"Found {len(services)} services for car {car_number}.")
+        else:
+            print(f"No services found for car {car_number} on {service_due}.")
+
+        return render_template('services-cars.html', services=services, car_number=car_number, search_date=service_due_str, service_station_email=service_station_email)
+
+    # If it's a GET request, simply fetch services for the car without filtering by date
     db_services = MongoDBHelper(collection="service-station-services")
+
+    # Modify the query to filter by car_number and service_station_email
     query_services = {
         'car_number': car_number,
+        'service_station_email': service_station_email,
     }
-    documents = db_services.fetch(query_services)
-    print(documents, type(documents))
+    services_cursor = db_services.fetch(query_services)
+    services = list(services_cursor)
+    print(services, type(services))
 
-    return render_template('services-cars.html',
-                           documents=documents,
-                           car_number=car_number)
+    return render_template('services-cars.html', services=services, car_number=car_number, service_station_email=service_station_email)
 
 
 @web_app.route("/search-service")
@@ -371,10 +454,18 @@ def search_service_of_car():
         print("Invalid date format. Use YYYY-MM-DD.")
         return render_template("error1.html", message="Invalid date format. Use YYYY-MM-DD.")
 
+    # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
+
+    if not service_station_email:
+        # If the session doesn't contain the service station email, return an error
+        print("Service station email not found in the session.")
+        return render_template("error1.html", message="Service station email not found in the session.")
+
     print("Searching for service with service_due:", service_due)
 
     db = MongoDBHelper(collection="service-station-services")
-    query = {'service_due': service_due}  # Modify the query to search by service_due
+    query = {'service_due': service_due, 'service_station_email': service_station_email}
 
     print("Querying the database with query:", query)
 
@@ -383,10 +474,51 @@ def search_service_of_car():
 
     if services:
         print(f"Found {len(services)} services.")
-        return render_template("service-profile.html", services=services)  # Pass the services list to the template
+        return render_template("service-profile.html", services=services, service_station_email=service_station_email)
     else:
         print("No services found.")
         return render_template("error1.html", message="No services found.")
+
+
+@web_app.route("/search-service-by-car-number")
+def search_service_by_car_number():
+    return render_template("search-services-by-number.html")
+
+
+@web_app.route("/search-service-of-car-by-number", methods=["POST"])
+def search_service_of_car_by_number():
+    car_number = request.form['car_number']  # Get the car number from the form
+
+    print("Searching for services for car number:", car_number)
+
+    # Retrieve the service station email from the session
+    service_station_email = session.get('service_station_email')
+
+    if not service_station_email:
+        # If the session doesn't contain the service station email, return an error
+        print("Service station email not found in the session.")
+        return render_template("error1.html", message="Service station email not found in the session.")
+
+    db = MongoDBHelper(collection="service-station-services")
+
+    # Modify the query to search by car number and service station email
+    query = {
+        'car_number': car_number,
+        'service_station_email': service_station_email
+    }
+
+    print("Querying the database with query:", query)
+
+    services_cursor = db.fetch(query)
+    services = list(services_cursor)
+
+    if services:
+        print(f"Found {len(services)} services for car number {car_number}.")
+        return render_template("search-services-by-number-profile.html",
+                               services=services)  # Pass the services list to the template
+    else:
+        print(f"No services found for car number {car_number}.")
+        return render_template("error1.html", message=f"No services found for car number {car_number}.")
 
 
 def main():
