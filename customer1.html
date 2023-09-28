@@ -34,9 +34,6 @@
           <li class="nav-item">
             <a class="nav-link" href="/home-Auto Service Track">Manage Customers</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/fetch-Customers-of-Service-Station">View Customers</a>
-          </li>
 
           <li class="nav-item">
             <a class="nav-link" href="/search">Search Customer</a>
@@ -76,6 +73,7 @@
         <th>gender</th>
         <th>address</th>
         <th>createdOn</th>
+        <th>Actions</th>
 
       </tr>
     </thead>
@@ -89,7 +87,7 @@
       <td>{{ doc['email'] }}</td>
       <td>{{ doc['gender'] }}</td>
       <td>{{ doc['address'] }}</td>
-      <td>{{ doc['createdOn'] }}</td>
+      <td> {{ doc['createdOn'].strftime('%d-%m-%Y')}}</td>
       <th><a href="/delete-customer/{{ doc['_id'] }}">Delete</a> | <a href="/update-customer/{{ doc['_id'] }}">Update</a></th>
 
     </tr>

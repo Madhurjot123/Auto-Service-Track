@@ -68,7 +68,7 @@
         <p class="card-text">Customer Phone: {{ service['phone_number'] }}</p>
         <p class="card-text">Car Name: {{ service['car_name'] }}</p>
         <p class="card-text">Car Number: {{ service['car_number'] }}</p>
-        <p class="card-text">Car Number: {{ service['service_due'] }}</p>
+        <p class="card-text">Service Due: {{ service['service_due'].strftime('%d-%m-%Y ')}}</p>
         <p class="card-text">Service Price: {{ service['price'] }}</p>
         <p class="card-text">Service Date: {{ service['createdOn'] }}</p>
 
