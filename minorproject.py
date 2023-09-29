@@ -154,11 +154,9 @@ def search():
 
 @web_app.route("/search-customer", methods=["POST"])
 def search_customer():
-    # Retrieve the service station email from the session
     service_station_email = session.get('service_station_email')
 
     if not service_station_email:
-        # If the session doesn't contain the service station email, return an error
         print("Service station email not found in the session.")
         return render_template("error2.html", message="Service station email not found in the session.")
 
@@ -200,11 +198,9 @@ def add_car(id):
 
 @web_app.route("/save-car", methods=["POST"])
 def save_car():
-        # Retrieve the service station email from the session
     service_station_email = session.get('service_station_email')
 
     if not service_station_email:
-            # If the session doesn't contain the service station email, return an error
             print("Service station email not found in the session.")
             return render_template("error2.html", message="Service station email not found in the session.")
 
@@ -336,7 +332,7 @@ def add_service(id):
 
 @web_app.route("/save-service", methods=["POST"])
 def save_service():
-    service_due_str = request.form['service_due']  # Get the service_due as a string from the form
+    service_due_str = request.form['service_due']
 
     try:
         # Parse the service_due string into a datetime object
@@ -388,7 +384,6 @@ def fetch_services_of_car(car_number):
     service_station_email = session.get('service_station_email')
 
     if not service_station_email:
-        # If the session doesn't contain the service station email, return an error
         print("Service station email not found in the session.")
         return render_template("error2.html", message="Service station email not found in the session.")
 
@@ -406,7 +401,7 @@ def fetch_services_of_car(car_number):
 
         db_services = MongoDBHelper(collection="service-station-services")
 
-        # Modify the query to filter by car_number and service_station_email
+
         query_services = {
             'car_number': car_number,
             'service_station_email': service_station_email,
@@ -421,7 +416,6 @@ def fetch_services_of_car(car_number):
 
         return render_template('services-cars.html', services=services, car_number=car_number, search_date=service_due_str, service_station_email=service_station_email)
 
-    # If it's a GET request, simply fetch services for the car without filtering by date
     db_services = MongoDBHelper(collection="service-station-services")
 
     # Modify the query to filter by car_number and service_station_email
