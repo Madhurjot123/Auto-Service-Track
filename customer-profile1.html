@@ -9,21 +9,17 @@
 </head>
 <body>
 
- <style>
-    .bg-black {
-      background-color: black;
-    }
-    .bg-black-text {
-      color: white;
-    }
-    .dark-red-text {
-      color: darkred;
-    }
-    .off-white-text {
-      color: #f8f9fa; /* Off-white color code */
-    }
-
-  </style>
+<style>
+  .bg-black {
+    background-color: black;
+  }
+  .bg-black-text {
+    color: white;
+  }
+  .off-white-text {
+    color: #f8f9fa; /* Off-white color code */
+  }
+</style>
  <div class="container mt-3">
 
   <nav class="navbar navbar-expand-sm bg-light">
@@ -65,7 +61,8 @@
       <p class="card-text">Email: {{customer['email']}}</p>
       <p class="card-text">Gender: {{customer['gender']}}</p>
       <p class="card-text">Address: {{customer['address']}}</p>
-      <p class="card-text">CreatedOn: {{customer['createdOn']}}</p>
+      <p class="card-text">CreatedOn: {{ customer['createdOn'].strftime('%d-%m-%Y ')}}</p>
+
 
       <a href="/add-car/{{customer['_id']}}" class="card-link">Add car</a>
       <a href="/fetch-cars/{{customer['email']}}" class="card-link">View cars</a>

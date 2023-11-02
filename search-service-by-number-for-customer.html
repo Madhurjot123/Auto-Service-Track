@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Auto Service Track</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<style>
+  .bg-blue {
+    background-color: darkblue; /* Change background color to blue */
+  }
+  .bg-blue-text {
+    color: white; /* Change text color to white */
+  }
+  .off-white-text {
+    color: #f8f9fa; /* Off-white color code */
+  }
+</style>
+
+<div class="container mt-3">
+    <div class="mt-4 p-5 bg-blue bg-blue-text rounded"> <!-- Updated background color classes -->
+      <h1 class="dark-red-text">Auto Service Track</h1>
+      <p class="off-white-text">Welcome To Auto Service Track</p>
+    </div>
+    <div class="mb-3 mt-3">
+      <h2>Search Customer</h2>
+      <form action="/search-service-of-car-by-number-profile" method="post">
+        <div class="mb-3 mt-3">
+          <label for="car_number">Car Number:</label>
+          <input type="text" class="form-control" id="car_number" placeholder="Enter Car Number" name="car_number" oninput="this.value = this.value.toUpperCase()">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3" style="background-color: blue;">Search Service</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

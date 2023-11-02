@@ -9,18 +9,15 @@
 </head>
 <body>
 <style>
-    .bg-black {
-      background-color: black;
-    }
-    .bg-black-text {
-      color: white;
-    }
-    .dark-red-text {
-      color: darkred;
-    }
-    .off-white-text {
-      color: #f8f9fa; /* Off-white color code */
-    }
+  .bg-black {
+    background-color: black;
+  }
+  .bg-black-text {
+    color: white;
+  }
+  .off-white-text {
+    color: #f8f9fa; /* Off-white color code */
+  }
 </style>
 
 <div class="container mt-3">
@@ -70,7 +67,8 @@
             <p class="card-text">Replaced Parts: {{ service['replaced parts'] }}</p>
             <p class="card-text">Car Type: {{ service['car type'] }}</p>
             <p class="card-text">Price: {{ service['price'] }}</p>
-            <p class="card-text">Service Due: {{ service['service_due']}}</p>
+            <p class="card-text">Service Due: {{ service['service_due'].strftime('%d-%m-%Y ')}}</p>
+
           </div>
         </div>
       {% endfor %}

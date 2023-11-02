@@ -9,18 +9,15 @@
 </head>
 <body>
 <style>
-    .bg-black {
-      background-color: black;
-    }
-    .bg-black-text {
-      color: white;
-    }
-    .dark-red-text {
-      color: darkred;
-    }
-    .off-white-text {
-      color: #f8f9fa; /* Off-white color code */
-    }
+  .bg-black {
+    background-color: black;
+  }
+  .bg-black-text {
+    color: white;
+  }
+  .off-white-text {
+    color: #f8f9fa; /* Off-white color code */
+  }
 </style>
 
 <div class="container mt-3">
@@ -81,7 +78,7 @@
             <td>{{ doc['car_colour'] }}</td>
             <td>{{ doc['car_model'] }}</td>
             <td>{{ doc['kms_driven'] }}</td>
-            <td>{{ doc['createdOn'] }}</td>
+            <td>{{ doc['createdOn'].strftime('%d-%m-%Y ')}}</td>
             <td><a href="/delete-car/{{ doc['_id'] }}">Delete</a> | <a href="/update-car/{{ doc['_id'] }}">Update</a></td>
             <td><a href="/add-service/{{ doc['_id'] }}">Add</a>|<a href="/fetch-services-cars/{{ doc['car_number'] }}">View</a></td>
 
